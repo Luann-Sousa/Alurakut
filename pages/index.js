@@ -1,4 +1,4 @@
-import React , { useState } from 'react';
+import React , { useState, useEffect } from 'react';
 import { MainGrid } from '../src/components/MainGrid';
 import { Box } from '../src/components/Box';
 import { ProfileRelationsBoxWrapper } from '../src/components/ProfileRelations';
@@ -20,6 +20,25 @@ function ProfileSidbar(props){
   )
 }
 
+function ProfileRelationsBox( props){
+  return(
+    <ProfileRelationsBoxWrapper>
+    <h2 className="smallTitle"> {props.title} ({props.items.length}) </h2>
+      <ul>
+            {/* {community.map((pessoas)=>{
+              return(
+                <li key={ pessoas.id}>
+                  <a href={`/users/${pessoas.title}`}>
+                    <img src={pessoas.image} />
+                      <span>{pessoas.title}</span>
+                  </a>
+                </li>
+              )
+            })} */}
+          </ul>
+    </ProfileRelationsBoxWrapper>
+  )
+}
 
 export default function Home() {
   const [ community, setHandleCommunity ] = useState([{
@@ -27,8 +46,9 @@ export default function Home() {
     title: "Eu odeio acorde cedo rs..",
     image: "https://alurakut.vercel.app/capa-comunidade-01.jpg"
   }]);
+  const [ followers, setFollowers] = useState([]);
   const githubUser =  "Luann244";
-  //const community = ["AluraKut2021"];
+
   const pessooasFavoritas = [ 
     "Luann244",
     "eugenio-silva",   
@@ -37,6 +57,17 @@ export default function Home() {
     "gabizinha12",
     "nunofranca",
   ];
+  useEffect( ()=> {
+    fetch("https://api.github.com/users/Luann244/followers")
+    .then( (response)=>{
+        return response.json();
+    })
+    .then( (responseComplet)=> {
+      console.log(followers);
+      setFollowers(responseComplet);
+    });
+  }, [])
+ 
   return (
     <>
       <AlurakutMenu githubUser={githubUser} />
@@ -94,6 +125,8 @@ export default function Home() {
      </div>
 
     <div className="profileRelationsArea" style={{ gridArea: "profileRelationsArea"}}>
+      <ProfileRelationsBox title="Seguidores" items={ followers }/>
+      
       <ProfileRelationsBoxWrapper>
       <h2 className="smallTitle"> Comunidades ({community.length}) </h2>
         <ul>
